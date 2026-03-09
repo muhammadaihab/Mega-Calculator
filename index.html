@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mega Calculator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app-container">
+        <aside class="sidebar" id="sidebar">
+            <!-- Nav items inserted by JS -->
+        </aside>
+
+        <main>
+            <header>
+                <div style="flex: 1; font-weight: 600; letter-spacing: 1px;">MEGA CALC</div>
+                <button class="copy-btn" id="global-copy-btn" title="Copy Current Result">📋 Copy</button>
+                <button class="theme-toggle" id="theme-toggle" style="margin-left: 10px;">🌓</button>
+            </header>
+
+            <div id="panels-container">
+                <!-- Age Calculator -->
+                <section class="calculator-panel" id="age">
+                    <div class="panel-container">
+                        <div class="panel-header">
+                            <h2>🎂 Age Calculator</h2>
+                        </div>
+                        <div class="input-group">
+                            <label>Date of Birth</label>
+                            <input type="date" id="age-dob" max="" onchange="calculateAge()">
+                        </div>
+                        <div class="display-screen" style="text-align: left;">
+                            <div class="expression">Age</div>
+                            <div class="result" id="age-ymd" style="font-size: 1.5rem;">0 Y, 0 M, 0 D</div>
+                            <div class="expression" style="margin-top:10px;">Next Birthday</div>
+                            <div class="result" id="age-next" style="font-size: 1.2rem; color: var(--accent-color);">0
+                                days</div>
+                            <hr style="border-color: var(--glass-border); margin: 15px 0;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div><small>Born On:</small><br><span id="age-dow" class="accent-text">-</span></div>
+                                <div><small>Total Days:</small><br><span id="age-days" class="accent-text">0</span>
+                                </div>
+                                <div><small>Total Hours:</small><br><span id="age-hours" class="accent-text">0</span>
+                                </div>
+                                <div><small>Total Minutes:</small><br><span id="age-mins" class="accent-text">0</span>
+                                    <span style="font-size: 0.7rem; opacity:0.7">(live)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Currency Converter -->
+                <section class="calculator-panel" id="currency">
+                    <div class="panel-container">
+                        <div class="panel-header">
+                            <h2>💱 Currency Converter <span class="loading-shimmer"
+                                    style="font-size:0.5em; padding:2px 5px;" id="curr-status">Live rates...</span></h2>
+                        </div>
+                        <div class="input-group">
+                            <label>Amount</label>
+                            <input type="number" id="curr-amount" value="1" oninput="calculateCurrency()">
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+                            <div class="input-group" style="flex:1; margin-bottom:0;">
+                                <label>From</label>
+                                <select id="curr-from" onchange="calculateCurrency()"></select>
+                            </div>
+                            <div class="btn accent" style="padding:10px; margin-top:15px; border-radius:50%;"
+                                onclick="swapCurrency()">↔</div>
+                            <div class="input-group" style="flex:1; margin-bottom:0;">
+                                <label>To</label>
+                                <select id="curr-to" onchange="calculateCurrency()"></select>
+                            </div>
+                        </div>
+                        <div class="display-screen">
+                            <div class="expression" id="curr-expr">1 USD = ...</div>
+                            <div class="result" id="curr-result">0.00</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Unit Converter -->
+                <section class="calculator-panel" id="unit">
+                    <div class="panel-container">
+                        <div class="panel-header">
+                            <h2>📐 Unit Converter</h2>
+                        </div>
+                        <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 20px;" id="unit-tabs">
+                            <!-- Tabs populated by JS -->
+                        </div>
+
+                        <div style="display: flex; gap: 15px; align-items: center; margin-bottom: 15px;">
+                            <div class="input-group" style="flex:1;">
+                                <input type="number" id="unit-val-1" value="1" oninput="calculateUnit(1)">
+                                <select id="unit-type-1" onchange="calculateUnit(1)" style="margin-top: 5px;"></select>
+                            </div>
+                            <div style="font-size: 1.5rem; color: var(--text-muted);">=</div>
+                            <div class="input-group" style="flex:1;">
+                                <input type="number" id="unit-val-2" value="" oninput="calculateUnit(2)">
+                                <select id="unit-type-2" onchange="calculateUnit(2)" style="margin-top: 5px;"></select>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+                <!-- Standard Calculator Panel -->
+                <section class="calculator-panel active" id="standard">
+                    <div class="panel-container">
+                        <div class="panel-header">
+                            <h2>🔢 Standard Calculator</h2>
+                        </div>
+                        <div class="display-screen">
+                            <div class="expression" id="std-expr"></div>
+                            <div class="result" id="std-result">0</div>
+                        </div>
+                        <div class="keypad" style="grid-template-columns: repeat(4, 1fr);">
+                            <div class="btn accent" onclick="stdCalc('C')">C</div>
+                            <div class="btn accent" onclick="stdCalc('%')">%</div>
+                            <div class="btn accent" onclick="stdCalc('/')">÷</div>
+                            <div class="btn accent" onclick="stdCalc('BACK')">⌫</div>
+                            <div class="btn" onclick="stdCalc('7')">7</div>
+                            <div class="btn" onclick="stdCalc('8')">8</div>
+                            <div class="btn" onclick="stdCalc('9')">9</div>
+                            <div class="btn accent" onclick="stdCalc('*')">×</div>
+                            <div class="btn" onclick="stdCalc('4')">4</div>
+                            <div class="btn" onclick="stdCalc('5')">5</div>
+                            <div class="btn" onclick="stdCalc('6')">6</div>
+                            <div class="btn accent" onclick="stdCalc('-')">−</div>
+                            <div class="btn" onclick="stdCalc('1')">1</div>
+                            <div class="btn" onclick="stdCalc('2')">2</div>
+                            <div class="btn" onclick="stdCalc('3')">3</div>
+                            <div class="btn accent" onclick="stdCalc('+')">+</div>
+                            <div class="btn" onclick="stdCalc('plusminus')">±</div>
+                            <div class="btn" onclick="stdCalc('0')">0</div>
+                            <div class="btn" onclick="stdCalc('.')">.</div>
+                            <div class="btn equal" onclick="stdCalc('=')">=</div>
+                            <div class="btn accent" onclick="stdCalc('sqrt')">√</div>
+                            <div class="btn accent" onclick="stdCalc('sq')">x²</div>
+                            <div class="btn accent" onclick="stdCalc('inv')" style="grid-column: span 2;">1/x</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Scientific Calculator Panel -->
+                <section class="calculator-panel" id="scientific">
+                    <div class="panel-container" style="max-width: 600px;">
+                        <div class="panel-header">
+                            <h2>🧮 Scientific Calculator</h2>
+                        </div>
+                        <div class="display-screen">
+                            <div class="expression" id="sci-expr"></div>
+                            <div class="result" id="sci-result">0</div>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <button class="btn" id="sci-deg-rad" onclick="toggleSciMode()"
+                                style="flex: 1; padding: 10px; font-size: 1rem;">DEG</button>
+                            <button class="btn" onclick="sciCalc('MC')"
+                                style="flex: 1; padding: 10px; font-size: 1rem;">MC</button>
+                            <button class="btn" onclick="sciCalc('MR')"
+                                style="flex: 1; padding: 10px; font-size: 1rem;">MR</button>
+                            <button class="btn" onclick="sciCalc('M+')"
+                                style="flex: 1; padding: 10px; font-size: 1rem;">M+</button>
+                            <button class="btn" onclick="sciCalc('M-')"
+                                style="flex: 1; padding: 10px; font-size: 1rem;">M−</button>
+                        </div>
+                        <div class="keypad" style="grid-template-columns: repeat(5, 1fr);">
+                            <div class="btn accent" onclick="sciCalc('sin')">sin</div>
+                            <div class="btn accent" onclick="sciCalc('cos')">cos</div>
+                            <div class="btn accent" onclick="sciCalc('tan')">tan</div>
+                            <div class="btn accent" onclick="sciCalc('log')">log</div>
+                            <div class="btn accent" onclick="sciCalc('ln')">ln</div>
+
+                            <div class="btn accent" onclick="sciCalc('asin')">asin</div>
+                            <div class="btn accent" onclick="sciCalc('acos')">acos</div>
+                            <div class="btn accent" onclick="sciCalc('atan')">atan</div>
+                            <div class="btn accent" onclick="sciCalc('sqrt')">√</div>
+                            <div class="btn accent" onclick="sciCalc('power')">xʸ</div>
+
+                            <div class="btn" onclick="sciCalc('7')">7</div>
+                            <div class="btn" onclick="sciCalc('8')">8</div>
+                            <div class="btn" onclick="sciCalc('9')">9</div>
+                            <div class="btn accent" onclick="sciCalc('C')">C</div>
+                            <div class="btn accent" onclick="sciCalc('BACK')">⌫</div>
+
+                            <div class="btn" onclick="sciCalc('4')">4</div>
+                            <div class="btn" onclick="sciCalc('5')">5</div>
+                            <div class="btn" onclick="sciCalc('6')">6</div>
+                            <div class="btn accent" onclick="sciCalc('*')">×</div>
+                            <div class="btn accent" onclick="sciCalc('/')">÷</div>
+
+                            <div class="btn" onclick="sciCalc('1')">1</div>
+                            <div class="btn" onclick="sciCalc('2')">2</div>
+                            <div class="btn" onclick="sciCalc('3')">3</div>
+                            <div class="btn accent" onclick="sciCalc('+')">+</div>
+                            <div class="btn accent" onclick="sciCalc('-')">−</div>
+
+                            <div class="btn" onclick="sciCalc('0')">0</div>
+                            <div class="btn" onclick="sciCalc('.')">.</div>
+                            <div class="btn accent" onclick="sciCalc('pi')">π</div>
+                            <div class="btn accent" onclick="sciCalc('e')">e</div>
+                            <div class="btn equal" onclick="sciCalc('=')">=</div>
+
+                            <div class="btn accent" onclick="sciCalc('fact')">n!</div>
+                            <div class="btn accent" onclick="sciCalc('abs')">|x|</div>
+                            <div class="btn accent" onclick="sciCalc('mod')">mod</div>
+                            <div class="btn accent" onclick="sciCalc('epower')">eˣ</div>
+                            <div class="btn accent" onclick="sciCalc('10power')">10ˣ</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Panels for other calculators will be structurally created dynamically to save HTML space for now, we'll convert them later if needed -->
+            </div>
+        </main>
+        <footer style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--glass-border); background: var(--glass-bg); backdrop-filter: blur(10px);">
+            Developed by <a href="https://github.com/muhammadaihab" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Muhammad Aihab</a>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
